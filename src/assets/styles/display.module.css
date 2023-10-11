@@ -1,0 +1,52 @@
+@media only screen and (min-width : 0px)and (max-width : 577px){
+
+    .display{
+   
+        height : 100px;
+        width : 90%;
+        border : 1px solid black;
+        background-color: lightgray;
+        margin-left: 5%;
+        margin-top : 20%;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
+        display: flex;
+        flex-direction: row-reverse;
+        flex-wrap: wrap;
+        align-content: flex-end;
+    }
+
+    .child{
+
+        font-size :xx-large;
+       
+    }
+
+}
+
+@media only screen and (min-width : 990px) and (max-width : 1440px){
+
+    
+.display{
+   
+    height : 100px;
+    width : 30%;
+    border : 1px solid black;
+    background-color: lightgray;
+    margin-left : 33%;
+    margin-top : 2%;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-content: flex-end;
+}
+
+.child{
+
+    font-size :xx-large;
+   
+}
+
+}
