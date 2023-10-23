@@ -2,11 +2,13 @@ import { useRef, useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
-import { LinearProgress, Typography } from "@mui/material";
+import { LinearProgress } from "@mui/material";
 import { Button, Stack } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import VideoFileIcon from "@mui/icons-material/VideoFile";
 import { styled } from "@mui/material/styles";
+import style from "../assets/styles/videos.module.css";
+import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
 
 const VisuallyHiddenInput = styled("input")`
   clip: rect(0 0 0 0);
@@ -76,6 +78,7 @@ function Videos() {
 
           if (res.status === 200) {
             toast.success("Video uploaded Successfully");
+
             setTimeout(() => {
               setProgress(null);
             }, 5000);
@@ -95,23 +98,45 @@ function Videos() {
     navigate(`/VideoOne/${name}`);
   }
 
-  console.log(fileRef.current);
+  async function handleDelete(name) {
+    try {
+      let res = await axios({
+        method: "Delete",
+        url: `/users/delete_video?name=${name}`,
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      if (res.status === 200) {
+        setVideos(videos.filter((item) => item.name !== name));
+        toast.success("Video Deleted Successfully");
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
 
   return (
     <>
-    <Stack direction={"row"} spacing={5} marginTop={"30px"}>
+      <Stack direction={"row"} spacing={5} marginTop={"30px"}>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<ArrowBackSharpIcon />}
+          onClick={() => navigate("/stuff")}
+        >
+          Back
+        </Button>
         <Button
           component="label"
           variant="contained"
           startIcon={<VideoFileIcon />}
           href="#file-upload"
         >
-         
-           choose a File
+          choose a File
           <VisuallyHiddenInput type="file" accept="video/*" ref={fileRef} />
         </Button>
-
-     
 
         <Button
           startIcon={<UploadFileIcon />}
@@ -138,14 +163,24 @@ function Videos() {
       )}
       <Stack marginTop={3} border={1} direction={"column"} spacing={3}>
         {videos.map((item, index) => (
-          <p key={index} onClick={() => handleClick(item.name)}>
-            <Button variant="text" color="primary">
+          <p key={index} className={`${style.video}`}>
+            <Button
+              variant="text"
+              color="primary"
+              onClick={() => handleClick(item.name)}
+            >
               {item.name}
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleDelete(item.name)}
+            >
+              Delete
             </Button>
           </p>
         ))}
       </Stack>
-    
     </>
   );
 }

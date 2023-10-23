@@ -1,14 +1,22 @@
-import style from "../assets/styles/gallery.module.css";
+
 import { useState, useRef, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Button, Stack } from "@mui/material";
+import UploadFileIcon from "@mui/icons-material/UploadFile";
+import VideoFileIcon from "@mui/icons-material/VideoFile";
+import ArrowBackSharpIcon from "@mui/icons-material/ArrowBackSharp";
+import { styled } from "@mui/material/styles";
+import style from '../assets/styles/videos.module.css';
+import { LinearProgress } from "@mui/material";
 
 import { useNavigate } from "react-router-dom";
 
 function Gallery() {
-  let [file, setFile] = useState(null);
+
   let Files = useRef(null);
   let [images, setImages] = useState([]);
+  let[progress,setProgress] = useState(0);
 
   let navigate = useNavigate();
   useEffect(() => {
@@ -30,18 +38,30 @@ function Gallery() {
     fetchImages();
   }, []);
 
-  function handleFile(e) {
-    setFile(e.target.files[0]);
-  }
+
+  const VisuallyHiddenInput = styled("input")`
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  white-space: nowrap;
+  width: 1px;
+`;
+
+
 
   async function handleUpload() {
-    if (file !== null) {
-      let temp = images.find((item) => item.name === file.name);
+
+    if (Files.current.files.length !== 0) {
+      let temp = images.find((item) => item.name === Files.current.files[0].name);
       if (temp) {
         toast.info("File Already added");
       } else {
         let form = new FormData();
-        form.append("gallery", file);
+        form.append("gallery", Files.current.files[0]);
 
         try {
           await axios({
@@ -53,6 +73,9 @@ function Gallery() {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
             },
             data: form,
+            onUploadProgress : (process) => {
+               setProgress(Math.trunc((process.event.loaded / process.event.total) * 100))
+            }
           });
 
           toast.success("file Uploaded");
@@ -62,19 +85,23 @@ function Gallery() {
         }
       }
       Files.current.value = "";
-      setFile(null);
+     
     } else {
       toast.info("Select atleast one file");
     }
   }
 
-  async function handleClick(name) {
+   function handleClick(name) {
     navigate(`/image/${name}`);
+  }
+
+  function handleDelete(name){
+     
   }
 
   return (
     <>
-      <div className={style.upload}>
+      {/* <div className={style.upload}>
         <input
           type="file"
           accept="image/*"
@@ -82,14 +109,78 @@ function Gallery() {
           onChange={(e) => handleFile(e)}
         ></input>
         <input type="button" value="upload" onClick={handleUpload}></input>
-      </div>
+      </div> */}
       <h1>Gallery</h1>
 
-      {images.map((item, index) => (
+
+      <Stack direction={"row"} spacing={5} marginTop={"30px"}>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<ArrowBackSharpIcon />}
+          onClick={() => navigate("/stuff")}
+        >
+          Back
+        </Button>
+        <Button
+          component="label"
+          variant="contained"
+          startIcon={<VideoFileIcon />}
+          href="#file-upload"
+        >
+          choose a File
+          <VisuallyHiddenInput type="file" accept="image/*" ref={Files} />
+        </Button>
+
+        <Button
+          startIcon={<UploadFileIcon />}
+          size="medium"
+          color="primary"
+          variant="outlined"
+          onClick={() => {
+            handleUpload();
+          }}
+        >
+          Upload
+        </Button>
+      </Stack>
+
+
+      {/* {images.map((item, index) => (
         <p key={index} onClick={() => handleClick(item.name)}>
           {item.name}
         </p>
-      ))}
+      ))} */}
+          {progress ? (
+        <>
+          {" "}
+          <LinearProgress variant="determinate" value={progress} />{" "}
+          <span>{progress}%</span>
+        </>
+      ) : (
+        ""
+      )}
+
+<Stack marginTop={3} border={1} direction={"column"} spacing={3}>
+        {images.map((item, index) => (
+          <p key={index} className={`${style.video}`}>
+            <Button
+              variant="outlined"
+              color="primary"
+              onClick={() => handleClick(item.name)}
+            >
+              {item.name}
+            </Button>
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => handleDelete(item.name)}
+            >
+              Delete
+            </Button>
+          </p>
+        ))}
+      </Stack>
     </>
   );
 }
