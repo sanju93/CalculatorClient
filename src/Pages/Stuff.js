@@ -1,34 +1,42 @@
-import style from "../assets/styles/stuff.module.css";
+import {Stack} from '@mui/material';
 import { NavLink } from "react-router-dom";
 
 function Stuff() {
   return (
     <>
-      <div className={style.container}>
-        <div className={`${style.child}`}>
+
+    <Stack direction={"row"} spacing = {15} padding={9}>
+    
+        <div>
           <NavLink to={"/gallery"}>
             {" "}
             <img
               src={require("../assets/images/background/images.png")}
               alt="gallery"
+              height={"300px"}
+              width = {"300px"}
             />
           </NavLink>
         </div>
-        <div className={`${style.child} ${style.music}`}>
+        <div>
           {" "}
           <NavLink to={"/music"} style={{ textDecoration: "none" }}>
             <img
               src={require("../assets/images/background/music.png")}
               alt={"music"}
+              height={"250px"}
+              width = {"250px"}
             />
           </NavLink>
         </div>
-        <div className={`${style.child} ${style.video}`}>
+        <div>
           {" "}
           <NavLink to={"/videos"} style={{ textDecoration: "none" }}>
             <img
               src={require("../assets/images/background/video.png")}
               alt="video"
+              height={"300px"}
+              width={"300px"}
             />
           </NavLink>
         </div>
@@ -41,7 +49,9 @@ function Stuff() {
             />
           </NavLink>
         </div> */}
-      </div>
+
+        </Stack>
+      
     </>
   );
 }
