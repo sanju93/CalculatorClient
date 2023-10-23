@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { Button, Stack ,Typography} from "@mui/material";
+import { Button, Stack } from "@mui/material";
 
 function MusicOne() {
   let param = useParams();

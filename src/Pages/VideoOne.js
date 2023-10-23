@@ -1,5 +1,5 @@
 import { useParams ,useNavigate} from "react-router-dom";
-import { CardMedia , Card, Button,Stack,Typography} from "@mui/material";
+import { CardMedia , Card, Button,Stack} from "@mui/material";
 
 
 function VideoOne() {
